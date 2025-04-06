@@ -147,12 +147,13 @@
   </div>
 
   <script>
-    const supabase = supabase.createClient("https://YOUR_PROJECT.supabase.co", "YOUR_ANON_KEY");
+    const { createClient } = supabase;
+    const supabaseClient = createClient("https://YOUR_PROJECT.supabase.co", "YOUR_ANON_KEY");
 
     async function signIn() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       if (error) {
         alert("ログイン失敗: " + error.message);
@@ -230,23 +231,22 @@
     }
 
     window.onload = loadHistory;
-    // ログイン状態を監視してチャットUI表示
-supabase.auth.getSession().then(({ data: { session } }) => {
-  if (session) {
-    document.getElementById("auth-section").style.display = "none";
-    document.getElementById("chat-section").style.display = "block";
-    window.user_id = session.user.id;
-  }
-});
 
-supabase.auth.onAuthStateChange((event, session) => {
-  if (session) {
-    document.getElementById("auth-section").style.display = "none";
-    document.getElementById("chat-section").style.display = "block";
-    window.user_id = session.user.id;
-  }
-});
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        document.getElementById("auth-section").style.display = "none";
+        document.getElementById("chat-section").style.display = "block";
+        window.user_id = session.user.id;
+      }
+    });
 
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        document.getElementById("auth-section").style.display = "none";
+        document.getElementById("chat-section").style.display = "block";
+        window.user_id = session.user.id;
+      }
+    });
   </script>
 </body>
 </html>
