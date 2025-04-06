@@ -33,6 +33,10 @@
       margin-bottom: 1rem;
     }
 
+    #model-select {
+      margin-bottom: 1rem;
+    }
+
     #chat-box {
       width: 100%;
       max-width: 600px;
@@ -120,6 +124,11 @@
   <h1>Chat with GPT 🤖</h1>
   <button id="toggle-btn" onclick="toggleTheme()">🌙 Toggle Dark Mode</button>
 
+  <div id="model-select">
+    <label><input type="radio" name="model" value="gpt-3.5-turbo" checked> GPT-3.5</label>
+    <label style="margin-left: 1rem;"><input type="radio" name="model" value="gpt-4"> GPT-4</label>
+  </div>
+
   <div id="chat-box"></div>
 
   <div id="input-area">
@@ -133,6 +142,8 @@
       const chatBox = document.getElementById("chat-box");
       const msg = input.value.trim();
       if (!msg) return;
+
+      const selectedModel = document.querySelector('input[name="model"]:checked').value;
 
       appendMessage("user", msg);
       saveToHistory("user", msg);
@@ -148,7 +159,7 @@
         const response = await fetch("https://chat-api-8hkk.onrender.com/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg })
+          body: JSON.stringify({ message: msg, model: selectedModel })
         });
         const data = await response.json();
         botMsg.innerText = data.reply || data.error;
